@@ -19,17 +19,21 @@ pipeline {
         sh 'mvn clean test'
       }
     }
-
     stage('package') {
       steps {
         echo 'deploy'
         sh 'mvn package -DskipTests'
+        archiveArtifacts 'target/*.war'
       }
     }
 
   }
   tools {
     maven 'Maven 3.6.3'
+  }
+
+  environment {
+    Maven = '3.6.3'
   }
   post {
     always {
