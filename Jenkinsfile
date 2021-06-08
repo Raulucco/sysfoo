@@ -19,6 +19,7 @@ pipeline {
       steps {
         echo 'deploy'
         sh 'mvn package -DskipTests'
+        archiveArtifacts 'target/*.war'
       }
     }
 
