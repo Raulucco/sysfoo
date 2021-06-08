@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'maven:3.6.3-jdk-11-slim'
+    }
+
+  }
   stages {
     stage('build') {
       steps {
@@ -14,12 +19,10 @@ pipeline {
         sh 'mvn clean test'
       }
     }
-
     stage('package') {
       steps {
         echo 'deploy'
         sh 'mvn package -DskipTests'
-        archiveArtifacts 'target/*.war'
         archiveArtifacts 'target/*.war'
       }
     }
@@ -28,6 +31,7 @@ pipeline {
   tools {
     maven 'Maven 3.6.3'
   }
+
   environment {
     Maven = '3.6.3'
   }
