@@ -40,6 +40,13 @@ pipeline {
 
       }
       steps {
+        when {
+           expression {
+               GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+               return GIT_BRANCH == 'origin/master'
+           }
+        }
+
         echo 'deploy'
         sh 'mvn package -DskipTests'
         archiveArtifacts 'target/*.war'
@@ -48,6 +55,13 @@ pipeline {
 
     stage('Docker build and publish') {
       steps {
+
+        when {
+         expression {
+             GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+             return GIT_BRANCH == 'origin/master'
+         }
+        }
         script {
           docker.withRegistry('https://index.docker.io/v1/', 'dockerlogin') {
 
