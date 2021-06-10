@@ -41,10 +41,7 @@ pipeline {
       }
       steps {
         when {
-           expression {
-               GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
-               return GIT_BRANCH == 'origin/master'
-           }
+           branch 'master'
         }
 
         echo 'deploy'
@@ -57,10 +54,7 @@ pipeline {
       steps {
 
         when {
-         expression {
-             GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
-             return GIT_BRANCH == 'origin/master'
-         }
+         branch 'master'
         }
         script {
           docker.withRegistry('https://index.docker.io/v1/', 'dockerlogin') {
@@ -74,6 +68,20 @@ pipeline {
           }
         }
 
+      }
+
+      stage('deploy to dev') {
+        when {
+            beforeAgent true
+            branch 'master'
+        }
+
+        agent any
+
+        steps {
+            echo 'Deploying with docker compose'
+            sh 'docker-compose up -d'
+        }
       }
     }
 
