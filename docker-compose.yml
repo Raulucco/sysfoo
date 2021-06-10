@@ -1,0 +1,6 @@
+version: "3.8"
+  services:
+    image: raulcm80/sysfoo:latest
+    ports:
+      - 9999:8080
+
